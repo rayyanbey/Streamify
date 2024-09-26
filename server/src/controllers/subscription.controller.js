@@ -102,7 +102,8 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
         {
             $project:{
                 "subscribed_Channels._id":1,
-                "subscribed_Channels.name":1
+                "subscribed_Channels.name":1,
+                "subscribed_Channels.avatar":1
             }
         }
     ])
