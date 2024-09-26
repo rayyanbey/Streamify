@@ -32,6 +32,11 @@ const VideoSchema = new mongoose.Schema({
     required: true,
     default: true
    },
+   category:{
+      type: [String], // Array of strings to store user's favorite categories
+      required: true,
+      enum:["Motivation","AI","Religion","Science","Space","History","Web Development","Coding","Computer Science","Politics","News","Health","Food","Technology"]
+   },
    owner:{
     type: mongoose.Schema.Types.ObjectId,
     ref: "User"

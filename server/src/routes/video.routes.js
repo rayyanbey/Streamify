@@ -1,7 +1,9 @@
 import { Router } from "express"
 import {
   deleteVideo,
-  getAllVideos,
+  getUserChannelVideos,
+  getGeneralVideos,
+  getUserSpecificVideos,
   getVideoById,
   publishAVideo,
   togglePublishStatus,
@@ -9,13 +11,21 @@ import {
 } from "../controllers/video.controller.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js"
 import { upload } from "../middlewares/multer.middleware.js"
+import { verify } from "jsonwebtoken"
 
 const router = Router()
-router.use(verifyJWT) // Apply verifyJWT middleware to all routes in this file
+//router.use(verifyJWT) // Apply verifyJWT middleware to all routes in this file
 
 
-router.route("/").get(getAllVideos)
-router.route("/").post(
+
+//Public Routes For Getting random videos on front page of the application
+
+router.route("/").get(getGeneralVideos)
+
+// Secured Routes
+router.route("/get-user-channel-videos").get(verifyJWT,getUserChannelVideos) //to get channel videos of the user
+router.route("/").get(verifyJWT,getUserSpecificVideos) //to get videos according to the recommendation system
+router.route("/").post(verifyJWT,
     upload.fields([
         {
           name: "videoFile",
@@ -31,10 +41,10 @@ router.route("/").post(
 
 router
   .route("/:videoId")
-  .get(getVideoById)
-  .delete(deleteVideo)
-  .patch(upload.fields([{name: "thumbnail", maxCount:1}]), updateVideo)
+  .get(verifyJWT,getVideoById)
+  .delete(verifyJWT,deleteVideo)
+  .patch(verifyJWT,upload.fields([{name: "thumbnail", maxCount:1}]), updateVideo)
 
-router.route("/toggle/publish/:videoId").patch(togglePublishStatus)
+router.route("/toggle/publish/:videoId").patch(verifyJWT,togglePublishStatus)
 
 export default router
