@@ -51,6 +51,7 @@ const getUserChannelVideos = asyncHandler(async (req, res) => {
 const publishAVideo = asyncHandler(async (req, res) => {
   const { title, description, status } = req.body
 
+  console.log(req.files)
   const videoFilePath = req.files?.videoFile[0]?.path
   const thumbnailPath = req.files?.thumbnail[0]?.path
 
@@ -61,7 +62,10 @@ const publishAVideo = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Thumbnail is required")
   }
 
-  const videoFileResponse = await uploadOnCloudinary(videoFilePath)
+  const videoFileResponse = await uploadOnCloudinary(videoFilePath,{resource_type: "video",
+    quality: "auto",
+    width: 1280,
+    crop: "limit"})
   const thumbnailResponse = await uploadOnCloudinary(thumbnailPath)
 
   if (!videoFileResponse) {
@@ -82,7 +86,6 @@ const publishAVideo = asyncHandler(async (req, res) => {
     thumbnail: thumbnailResponse.url,
     isPublished: status,
     Duration: videoFileResponse.duration,
-    views: 0,
     owner: userId,
   })
 
@@ -233,7 +236,7 @@ const getGeneralVideos = asyncHandler(async (req, res) => {
 })
 
 export {
-  getUserChannelVideos as getAllVideos,
+  getUserChannelVideos,
   publishAVideo,
   getVideoById,
   updateVideo,

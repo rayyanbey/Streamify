@@ -77,6 +77,7 @@ const registerUser = asyncHandler(async (req, res) => {
     email,
     password,
     username,
+    categories
   })
 
   //remove password and refresh token from response
@@ -88,6 +89,7 @@ const registerUser = asyncHandler(async (req, res) => {
   if (!createdUser) {
     throw new ApiError(500, "Problem in Registering User")
   }
+
   //return response
   return res
     .status(201)
